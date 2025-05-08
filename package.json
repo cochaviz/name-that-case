@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"generate-data": "node scripts/generate-data.cjs",
-		"build": "npm run generate-data && vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
