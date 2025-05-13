@@ -86,63 +86,44 @@
 	}
 </script>
 
-<div
-	class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#181818] via-[#232323] to-[#101c10] text-[#6aff6a] font-mono px-4"
->
-	<h1 class="text-6xl md:text-7xl font-bold tracking-widest mb-4 animate-fadein drop-shadow-lg">
-		name-that-case
-	</h1>
-	<p
-		class="text-2xl md:text-3xl text-[#eaeaea] mb-16 animate-fadein2 flex items-center gap-3 relative"
-	>
-		A tiny city for your <span class="text-[#6aff6a]">DFIR</span> case.
-		<span class="relative group z-0">
-			<span
-				class="inline-flex w-8 h-8 rounded-full border border-[#6aff6a] text-[#181818] bg-[#6aff6a] items-center justify-center text-xl font-black cursor-help select-none shadow-md transition-all duration-200 group-hover:bg-[#aaffaa] group-hover:text-[#181818] group-hover:shadow-lg group-hover:scale-110 animate-glow-symbol leading-none text-center"
-			>
-				?
-			</span>
-			<span
-				class="absolute left-1/2 translate-y-8 -translate-x-1/2 mt-4 w-80 bg-[#181818] text-[#eaeaea] border border-[#6aff6a] rounded-lg px-4 py-3 text-base shadow-2xl z-20 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 text-center"
-			>
-				<span
-					class="absolute top-[-10px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-[#181818] z-20"
-				></span>
+<div class="container">
+	<h1 class="title">name-that-case</h1>
+	<p class="subtitle">
+		A tiny city for your <span class="highlight">DFIR</span> case.
+		<span class="help-container">
+			<span class="help-icon">?</span>
+			<span class="help-tooltip">
+				<span class="tooltip-arrow"></span>
 				We like to name our DFIR cases after small cities. This is something we picked up on early in
 				our careers from other incident responders. We thought we might share this little inside joke,
 				and make it an outside joke.
 			</span>
 		</span>
 	</p>
-	<div
-		class="border border-[#6aff6a] rounded-2xl p-12 w-full max-w-3xl flex flex-col gap-10 bg-[#101c10]/90 shadow-2xl animate-popin transition-transform duration-300 hover:scale-105 hover:shadow-3xl backdrop-blur-md z-10"
-	>
-		<div class="flex flex-row justify-between items-center gap-4 text-[#eaeaea] mb-2">
-			<span class="text-xl whitespace-nowrap">Select a country</span>
+	<div class="card">
+		<div class="country-selector">
+			<span class="selector-label">Select a country</span>
 			<div
-				class="relative w-80"
+				class="dropdown-container"
 				bind:this={dropdownRef}
 				tabindex="0"
 				on:keydown={handleDropdownKeydown}
 			>
 				<button
-					class="w-full flex justify-between items-center bg-[#181818] border border-[#6aff6a] rounded-lg px-6 py-3 text-[#6aff6a] text-lg focus:outline-none focus:ring-2 focus:ring-[#6aff6a] transition-all custom-dropdown-btn"
+					class="dropdown-button"
 					type="button"
 					aria-haspopup="listbox"
 					aria-expanded={dropdownOpen}
 					on:click={() => (dropdownOpen = !dropdownOpen)}
 				>
-					<span>{selectedCountry || 'Select...'}</span>
-					<span class="ml-2 text-[#6aff6a] text-xl">▼</span>
+					<span class="selected-text">{selectedCountry || 'Select...'}</span>
+					<span class="dropdown-arrow">▼</span>
 				</button>
 				{#if dropdownOpen}
-					<ul
-						class="absolute z-10 left-0 mt-2 w-full bg-[#181818] border border-[#6aff6a] rounded-lg shadow-2xl max-h-60 overflow-auto animate-popin"
-						role="listbox"
-					>
+					<ul class="dropdown-list" role="listbox">
 						{#each countries as country, i}
 							<li
-								class="px-6 py-3 cursor-pointer hover:bg-[#232323] text-[#6aff6a] text-lg transition-colors"
+								class="dropdown-item"
 								class:selected={selectedCountry === country.name}
 								class:highlighted={dropdownIndex === i}
 								on:click={() => selectCountry(country.name)}
@@ -158,37 +139,22 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex flex-col items-center gap-4 py-10 min-h-[110px] justify-center w-full">
+		<div class="city-display">
 			{#if loading}
-				<span class="text-2xl text-[#eaeaea] text-center w-full animate-fadein2">Loading...</span>
+				<span class="loading-text">Loading...</span>
 			{:else if city}
-				<span class="text-5xl md:text-6xl font-extrabold tracking-widest text-center w-full"
-					>{city.name}</span
-				>
-				<span class="text-2xl text-[#eaeaea] text-center w-full"
-					>Population ~{city.population} - {city.country}</span
-				>
+				<span class="city-name">{city.name}</span>
+				<span class="city-info">Population ~{city.population} - {city.country}</span>
 			{/if}
 		</div>
-		<div class="flex gap-8 mt-6 justify-center">
-			<button
-				class="border border-[#6aff6a] px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#6aff6a] hover:text-[#181818] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6aff6a] shadow-md"
-				on:click={tryAnother}
-				disabled={loading || !selectedCountry}
-			>
+		<div class="button-container">
+			<button class="action-button" on:click={tryAnother} disabled={loading || !selectedCountry}>
 				TRY ANOTHER
 			</button>
-			<button
-				class="border border-[#6aff6a] px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#6aff6a] hover:text-[#181818] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6aff6a] relative shadow-md"
-				on:click={copyToClipboard}
-				disabled={!city}
-			>
+			<button class="action-button copy-button" on:click={copyToClipboard} disabled={!city}>
 				COPY TO CLIPBOARD
 				{#if showCopied}
-					<span
-						class="absolute -top-8 left-1/2 -translate-x-1/2 text-sm bg-[#222] px-3 py-1 rounded text-[#6aff6a] border border-[#6aff6a] animate-fadein2 shadow-lg"
-						>Copied!</span
-					>
+					<span class="copied-tooltip">Copied!</span>
 				{/if}
 			</button>
 		</div>
@@ -196,131 +162,313 @@
 </div>
 
 <style>
-	@keyframes fadein {
-		from {
-			opacity: 0;
-			transform: translateY(-20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
+	:global(body) {
+		margin: 0;
+		padding: 0;
+		font-family: 'IBM Plex Mono', 'Fira Mono', 'Menlo', 'Consolas', monospace;
+		background: #181818;
+		color: #6aff6a;
 	}
-	@keyframes fadein2 {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
+
+	.container {
+		width: 100vw;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		background: #181818;
+		color: #6aff6a;
+		padding: 0;
 	}
-	@keyframes popin {
-		from {
-			opacity: 0;
-			transform: scale(0.95);
-		}
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
+
+	.title {
+		font-size: 3.5rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		margin-bottom: 1.5rem;
+		text-align: center;
+		font-family: inherit;
+		color: #6aff6a;
 	}
-	@keyframes glow {
-		0%,
-		100% {
-			text-shadow:
-				0 0 8px #6aff6a,
-				0 0 4px #6aff6a;
-		}
-		50% {
-			text-shadow:
-				0 0 8px #6aff6a,
-				0 0 2px #6aff6a;
-		}
+
+	.subtitle {
+		font-size: 1.25rem;
+		color: #eaeaea;
+		margin-bottom: 2.5rem;
+		text-align: center;
+		font-family: inherit;
 	}
-	.animate-fadein {
-		animation: fadein 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+	.highlight {
+		color: #6aff6a;
+		font-family: inherit;
 	}
-	.animate-fadein2 {
-		animation: fadein2 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
-	}
-	.animate-popin {
-		animation: popin 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
-	}
-	.animate-glow {
-		animation: glow 1.2s infinite alternate;
-	}
-	.shadow-2xl {
-		box-shadow:
-			0 8px 40px 0 #6aff6a33,
-			0 1.5px 8px 0 #000a;
-	}
-	.shadow-3xl {
-		box-shadow:
-			0 16px 64px 0 #6aff6a55,
-			0 2px 16px 0 #000c;
-	}
-	.drop-shadow-lg {
-		filter: drop-shadow(0 2px 8px #6aff6a88);
-	}
-	.drop-shadow-xl {
-		filter: drop-shadow(0 4px 16px #6aff6a88);
-	}
-	.backdrop-blur-md {
-		backdrop-filter: blur(8px);
-	}
-	.custom-dropdown-btn {
-		background-image: none;
-		outline: none;
+
+	.card {
+		border: 1px solid #6aff6a;
+		padding: 2.5rem 2.5rem 2rem 2.5rem;
+		background: #6aff6a0a;
+		width: 100%;
+		max-width: 600px;
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
 		box-shadow: none;
-		position: relative;
-		z-index: 20;
-		cursor: pointer;
+		border-radius: 0;
+		align-items: center;
 	}
-	ul[role='listbox'] {
+
+	.country-selector {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+		color: #eaeaea;
+		font-family: inherit;
+	}
+
+	.selector-label {
+		font-size: 1.25rem;
+		font-family: inherit;
+		color: #eaeaea;
+		margin-right: 1.5rem;
+		white-space: nowrap;
+	}
+
+	.dropdown-container {
+		position: relative;
+		width: 240px;
+		font-family: inherit;
+	}
+
+	.dropdown-button {
+		width: 100%;
+		background: transparent;
+		border: 1px solid #6aff6a;
+		color: #6aff6a;
+		font-size: 1.25rem;
+		font-family: inherit;
+		padding: 0.5rem 1.5rem 0.5rem 1rem;
+		text-align: left;
+		cursor: pointer;
+		box-shadow: none;
+		border-radius: 0;
+		outline: none;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		transition: none;
+	}
+
+	.dropdown-arrow {
+		margin-left: 1rem;
+		color: #6aff6a;
+		font-size: 1.5rem;
+		font-family: inherit;
+	}
+
+	.dropdown-list {
+		position: absolute;
+		z-index: 10;
+		left: 0;
+		right: 0;
+		width: 100%;
+		min-width: 0;
+		background: #181818;
+		border: 1px solid #6aff6a;
+		border-radius: 0;
+		box-shadow: none;
+		max-height: 200px;
+		overflow-y: auto;
+		font-family: inherit;
+		/* Custom scrollbar for desktop */
 		scrollbar-width: thin;
 		scrollbar-color: #6aff6a #232323;
 	}
-	ul[role='listbox']::-webkit-scrollbar {
+	.dropdown-list::-webkit-scrollbar {
 		width: 8px;
 		background: #232323;
 	}
-	ul[role='listbox']::-webkit-scrollbar-thumb {
+	.dropdown-list::-webkit-scrollbar-thumb {
 		background: #6aff6a;
-		border-radius: 8px;
+		border-radius: 0;
 	}
-	li.selected {
+	.dropdown-list::-webkit-scrollbar-track {
 		background: #232323;
-		font-weight: bold;
 	}
-	li.highlighted {
-		background: #6aff6a33;
-		color: #181818;
-	}
-	li[role='option'] {
+
+	.dropdown-item {
+		padding: 0.5rem 1rem;
 		cursor: pointer;
+		color: #6aff6a;
+		font-size: 1.1rem;
+		font-family: inherit;
+		background: transparent;
+		border: none;
+		transition: none;
 	}
-	button,
-	.custom-dropdown-btn {
+	.dropdown-item.selected,
+	.dropdown-item.highlighted,
+	.dropdown-item:hover {
+		background: #181818;
+		color: #eaeaea;
+	}
+
+	.city-display {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.5rem 0 1rem 0;
+		min-height: 110px;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.loading-text {
+		font-size: 1.5rem;
+		color: #eaeaea;
+		text-align: center;
+		width: 100%;
+		font-family: inherit;
+	}
+
+	.city-name {
+		font-size: 2.5rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-align: center;
+		width: 100%;
+		color: #6aff6a;
+		font-family: inherit;
+	}
+
+	.city-info {
+		font-size: 1.25rem;
+		color: #eaeaea;
+		text-align: center;
+		width: 100%;
+		font-family: inherit;
+	}
+
+	.button-container {
+		display: flex;
+		flex-direction: row;
+		gap: 2rem;
+		margin-top: 1.5rem;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.action-button {
+		border: 1px solid #6aff6a;
+		color: #6aff6a;
+		padding: 0.75rem 2rem;
+		border-radius: 0;
+		font-size: 1.25rem;
+		font-family: inherit;
+		font-weight: 400;
+		background: #fff00000;
 		cursor: pointer;
+		transition: none;
+		box-shadow: none;
+		width: 100%;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
 	}
-	.flex.gap-8.mt-6.justify-center > button {
-		cursor: pointer;
+
+	.action-button:hover:not(:disabled),
+	.action-button:focus:not(:disabled) {
+		background: #6aff6a20;
+		border-color: #6aff6a;
 	}
-	.animate-glow-symbol {
-		box-shadow:
-			0 0 8px #6aff6a88,
-			0 0 2px #6aff6a44;
-		transition:
-			box-shadow 0.2s,
-			background 0.2s,
-			color 0.2s,
-			transform 0.2s;
+
+	.action-button:active:not(:disabled) {
+		background: #6aff6a40;
+		border-color: #6aff6a;
 	}
-	.group:hover .animate-glow-symbol {
-		box-shadow:
-			0 0 24px #6aff6a,
-			0 0 8px #6aff6a;
+
+	.action-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.copy-button {
+		position: relative;
+	}
+
+	.copied-tooltip {
+		position: absolute;
+		top: -2rem;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 1rem;
+		background: #181818;
+		padding: 0.25rem 0.75rem;
+		border: 1px solid #6aff6a;
+		color: #6aff6a;
+		font-family: inherit;
+		border-radius: 0;
+		box-shadow: none;
+		white-space: nowrap;
+	}
+
+	.help-container {
+		display: none;
+	}
+
+	@media (max-width: 700px) {
+		.card {
+			padding: 1.5rem 0.5rem 1rem 0.5rem;
+			max-width: 98vw;
+		}
+		.country-selector {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.5rem;
+			width: 100%;
+		}
+		.button-container {
+			flex-direction: column;
+			gap: 1rem;
+			width: 100%;
+		}
+		.dropdown-container {
+			width: 100%;
+			max-width: 100vw;
+		}
+		.dropdown-button {
+			font-size: 1.1rem;
+			padding: 0.75rem 1rem;
+			width: 100%;
+		}
+		.dropdown-list {
+			width: 100%;
+			left: 0;
+			right: 0;
+			min-width: 0;
+			box-sizing: border-box;
+		}
+		.action-button {
+			font-size: 1.1rem;
+			padding: 1rem 0.5rem;
+			width: 100%;
+		}
+		.city-name {
+			font-size: 2rem;
+		}
+		.city-info {
+			font-size: 1rem;
+		}
+		.card,
+		.container {
+			box-sizing: border-box;
+		}
+		.container {
+			padding: 0.5rem;
+		}
 	}
 </style>
